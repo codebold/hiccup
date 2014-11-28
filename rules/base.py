@@ -59,7 +59,7 @@ class CharRule(MappingRule):
     # exported = False
     mapping = {
         "(space | ace | paa)": K("space")
-        , "paa paa": K("space:2")
+        , "ace ace": K("space:2")
         , "(colon|coal)": K("colon")
         , "(semi colon|sem-col|sem-coal)": T(";")
         , "(hyphen|hive)": K("hyphen")
@@ -238,10 +238,10 @@ class KeyboardRule(MappingRule):
         , "find find find": K("c-f:3")
         , "find now <text>": K("c-f") + T('%(text)s')
         # files
-        , "new file": K("c-n")
-        , "o-file": K("c-o")
-        , "sa-file": K("c-s")
-        , "sa-file-as": K("cs-s")
+        , "(nuphyle | new file)": K("c-n")
+        , "(ophyle |  open file)": K("c-o")
+        , "(saphyle | save file)": K("c-s")
+        , "(saphylas | save file as)": K("cs-s")
         , "close": K("c-w")
         , "(filex | phaix) <file_extension>": T("%(file_extension)s")
         , "to do [<text>]": T("TODO: %(text)s")
@@ -478,8 +478,8 @@ class CharacterDictationRule(MappingRule):
     )
     mapping.update(
         {
-            "space <text>": T(" %(text)s")
-            , "<text> space": T("%(text)s ")
+            "(space | ace) <text>": T(" %(text)s")
+            , "<text> (space | ace)": T("%(text)s ")
             , "sing <text>": T("'%(text)s'")
             , "quote <text>": T('"%(text)s"')
             , "<text> spequals": T("%(text)s = ")

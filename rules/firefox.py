@@ -18,6 +18,7 @@ from dragonfly import (
 class CoreRule(MappingRule):
     mapping = {
         "command": K("escape") + K("colon")
+        , "find": K("escape") + K("slash")
         # pages
         , "open": K("escape") + K("t")
         , "open <text>": K("escape") + firefox("tabopen %(text)s", False) + P("20") + K("tab/20,enter")
@@ -44,7 +45,6 @@ class CoreRule(MappingRule):
         # bookmarks
         , "book all": K("escape") + T(":bmarks") + K("enter")
         # find
-        , "find": K("escape") + K("slash")
         , "next": K("escape") + K("n")
     }
     defaults = {
