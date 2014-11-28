@@ -517,7 +517,7 @@ class EshellRule(MappingRule):
 
 class ErcRule(MappingRule):
     mapping = {
-        "(ERC | IRC)": emacs("erc")
+        "(ERC | IRC)": emacs("cdb-erc")
     }
     defaults = {
         "text":""

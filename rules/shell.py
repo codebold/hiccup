@@ -133,6 +133,7 @@ class GitRule(MappingRule):
         , "git remote add <text>": T("git remote add %(text)s ")
         , "git remote add <text> partenza": T("git remote add %(text)s git@projects.partenza.de:")
         , "git remote add origin": T("git remote add origin git@projects.partenza.de:")
+        , "git remote remove": T("git remote remove ")
         , "git push": T("git push\n")
         , "git push upstream": T("git push -u ")
         , "git push origin master": T("git push -u origin master\n")
@@ -143,6 +144,49 @@ class GitRule(MappingRule):
         , "git branch": T("git branch ")
         , "git branch <text>": T("git branch %(text)s ")
         , "git clone": T("git clone ")
+        , "git checkout": T("git checkout ")
+        , "git checkout <text>": T("git checkout %(text)s ")
+        , "git diff": T("git diff ")
+        , "git diff head": T("git diff HEAD")
+        , "git diff <text>": T("git diff %(text)s ")
+    }
+    defaults = {
+        "text":""
+    }
+    extras = [
+        chc_base.text
+    ]
+
+
+#---------------------------------------------------------------------------
+# IRC Rule
+#---------------------------------------------------------------------------
+
+class IrcRule(MappingRule):
+    mapping = {
+        "admin": T("/ADMIN\n")
+        , "away": T("/AWAY ")
+        , "away <text>": T("/AWAY %(text)s\n")
+        , "away clear": T("/AWAY\n")
+        , "channel help": T("/MSG ChanServ help ")
+        , "channel help commands": T("/MSG ChanServ help\n")
+        , "channel topic": T("/MSG ChanServ TOPIC ")
+        , "channel topic append": T("/MSG ChanServ TOPICAPPEND ")
+        , "channel topic prepend": T("/MSG ChanServ TOPICPREPEND ")
+        , "help": T("/HELP\n")
+        , "join": T("/j ")
+        , "join <text>": T("/j %(text)s\n")
+        , "knock": T("/KNOCK ")
+        , "knock <text>": T("/KNOCK %(text)s\n")
+        , "message": T("/MSG ")
+        , "message <text>": T("/MSG %(text)s")
+        , "nick": T("/NICK ")
+        , "nick <text>": T("/NICK %(text)s\n")
+        , "identify": T("/MSG NickServ identify ")
+        , "quit": T("/QUIT\n")
+        , "user stats": T("/LUSERS\n")
+        , "who is": T("/WHOIS ")
+        , "who is <text>": T("/WHOIS %(text)s\n")
     }
     defaults = {
         "text":""
