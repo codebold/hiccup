@@ -36,7 +36,7 @@ from subprocess import (
 #---------------------------------------------------------------------------
 # Characters
 #---------------------------------------------------------------------------
-class AlphaRule(MappingRule):
+class CharacterRule(MappingRule):
     mapping = {}
     for word in chc_base.alpha_words:
         letter = word[0].lower()
@@ -44,7 +44,8 @@ class AlphaRule(MappingRule):
         mapping['cap ' +word] = K(letter.upper())
         mapping['insert ' +word] = T(word.lower())
 
-class LetterSeqRule(CompoundRule):
+# NatSpeak's spell command already does this job.       
+class SpellingRule(CompoundRule):
     spec = "(letters|spell) <letter_sequence>"
     extras = [Repetition(chc_base.letter,
                          min=1, max=26,
@@ -53,94 +54,6 @@ class LetterSeqRule(CompoundRule):
     def _process_recognition(self, node, extras):
         for letter in extras["letter_sequence"]:
             T(letter).execute()
-
-class CharRule(MappingRule):
-    # this is part of the main sequence command, and doesn't need exporting
-    # exported = False
-    mapping = {
-        "(space | ace | paa)": K("space")
-        , "ace ace": K("space:2")
-        , "(colon|coal)": K("colon")
-        , "(semi colon|sem-col|sem-coal)": T(";")
-        , "(hyphen|hive)": K("hyphen")
-        , "tilde": K("tilde")
-        , "percent": K("percent")
-        , "(ampersand | amper)":K("ampersand")
-        # parenthesis
-        , "laip": K("lparen")
-        , "rape": K("rparen")
-        , "lack": K("lbracket")
-        , "rack": K("rbracket")
-        , "lace": K("lbrace")
-        , "race": K("rbrace")
-
-        , "slash": K("slash")
-        , "backslash": K("backslash")
-        , "pipe": K("bar")
-        , "(comma | cam)": K("comma")
-        , "scam": T(", ")
-        , "(under | ska)": K("underscore")
-        , "quote": K("dquote")
-        , "sing": K("apostrophe")
-
-        , "double quote": K("dquote:2")
-        , "(dot | period)": K("dot")
-        , "dot dot": K("dot:2")
-        , "dot dot dot": K("dot:3")
-        , "equal[s]": K("equal")
-        , "hash": K("hash")
-        , "shash": T("# ")
-        , "plus": K("plus")
-        , "minus": K("minus")
-        , "dollar": K("dollar")
-        , "(exclaim|clam)": K("exclamation")
-        , "(question-mark|quest)": K("question")
-        , "(star | asterix | asterisk)": K("asterisk")
-
-        , "rang": T(">")
-        , "greater than": T(" > ")
-        , "lang": T("<")
-        , "(triple arrow | tri-lang)": T(" <<< ")
-        , "less than": T(" < ")
-        , "lat": T("@")
-
-        , "g-equal": T(" >= ")
-        , "l-equal": T(" <= ")
-        , "minus-equal": T(" -= ")
-        , "plus-equal": T(" += ")
-        , "star-equal": T(" *= ")
-        , "minus-minus": T("--")
-        , "plus-plus": T("++")
-        , "double-equal": T(" == ")
-        , "(not-equal | nequal)": T(" != ")
-        , "logical-and": T(" && ")
-        , "logical-or": T(" || ")
-        , "left-shift": T(" << ")
-        , "right-shift": T(" >> ")
-
-        , "spive": T(" -")
-        , "pive": T("- ")
-        , "pivak": T("- [ ]")
-        , "scol": T(": ")
-        , "spipe": T(" | ")
-        , "splus": T(" + ")
-        , "spequal": T(" = ")
-        , "cama": T(", ")
-        , "equal-scol": T("=: ")
-        , "equote":K("equal,quote,quote,left")
-        #, "dolaip": (T("$()") + K("left"))
-        , "clap": K("colon,enter")
-        , "lote": K("lparen,quote")
-        , "lace-quote": K("lparen,right,colon,quote")
-        
-        , "slah (cam | cama)": (K("end,enter") + T(", "))
-        , "(slah amp | slamper)": (K("end,enter") + T("& "))
-        , "slah amp amp": (K("end,enter") + T("&& "))
-        , "slah pipe": (K("end,enter") + T("| "))
-        , "slah pipe pipe": (K("end,enter") + T("|| "))
-        , "slah plus": (K("end,enter") + T("+ "))
-        , "slah minus": (K("end,enter") + T("- "))
-    }
 
 class LiteralRule(MappingRule):
     mapping = {
@@ -165,86 +78,79 @@ class LiteralRule(MappingRule):
     ]
 
 #---------------------------------------------------------------------------
-# Navigating
+# Keyboard
 #---------------------------------------------------------------------------
 
-class DragoflyRule(MappingRule):
+class StandardKeysRule(MappingRule):
     mapping = {
-        "(go-to-sleep | snore | mic-sleep)": Function(lambda: natlink.setMicState("sleeping"))
-        , "(lock-Dragon|turn-mic-off)": Function(lambda: natlink.setMicState("off"))
-        , "german profile": Function(lambda: natlink.saveUser() + natlink.openUser("Codebold german"))
-        , "englisches Profil": Function(lambda: natlink.saveUser() + natlink.openUser("Codebold"))
-        , "reload grammar[s]": Function(lambda: updateAllGrammars())
-        , "reload <grammar>": GrammarUpdate()
-        , "como": Function(lambda: natlink.recognitionMimic(["switch", "to", "command", "mode"]))
-        , "diemo": Function(lambda: natlink.recognitionMimic(["start", "dictation", "mode"]))
-        , "nomo": Function(lambda: natlink.recognitionMimic(["normal", "mode", "on"]))
-        , "sleemo": Function(lambda: natlink.recognitionMimic(["go", "to", "sleep"]))
-        , "dictation": Function(lambda: natlink.recognitionMimic(["show", "dictation", "box"]))
-        , "dictox": Function(lambda: natlink.recognitionMimic(["normal", "mode", "on"])) + Function(lambda: natlink.recognitionMimic(["show", "dictation", "box"]))
-        , "transfox": Function(lambda: natlink.recognitionMimic(["click", "transfer"])) + Function(lambda: natlink.recognitionMimic(["command", "mode", "on"]))
-        , "blitz NatLink": Function(blitz_natlink_status)
-        , "show NatLink": Function(show_natlink_status)
-    }
-    extras = [
-        chc_base.grammar
-    ]
-
-class WindowsRule(MappingRule):
-    mapping = {
-        "context": K("apps")
-        
-        #, "closapp": K("win:down, a-f4, win:up") # switch
-        #, "closapp": K("alt:down, f4, alt:up")
-        #, "closapp": K("a-f4")
-        , "closapp": Function(lambda: natlink.recognitionMimic(["close", "window"]))
-        #, "swatch": K("alt:down") + P("20") + K("tab") + P("20") + K("alt:up") # switch app
-        #, "swatch": K("win:down, a-tab, win:up") # switch tab 
-        , "swatch": StartApp("explorer.exe", chc_base.dir_bin + "window-switch.lnk")
-        , "swatcha": StartApp("explorer.exe", chc_base.dir_bin + "window-switch.lnk") + K("enter")
-        , "sound settings": StartApp("explorer.exe", chc_base.dir_bin + "Sound.lnk")
-        , "swap": K("c-tab") # switch tab
-        , "putty <host_name>": DynStartApp(chc_base.exe_putty, "-load", "%(host_name)s")
-    }
-    extras = [
-        chc_base.host_name
-    ]
-
-class FindRule(MappingRule):
-    mapping = {
-        # general
-        "find": K("enter")
-}
-
-class KeyboardRule(MappingRule):
-    mapping = {
-        # general
-        "(quit | escape) [<1to100>]": K("escape:%(1to100)d")
-        , "quit quit": K("escape:2")
-        , "quit quit quit": K("escape:3")
-        , "(cop | copy)": K("c-c")
-        , "cut": K("c-x")
-        , "paste [<1to100>]": K("c-v:%(1to100)d")
-        , "paste paste": K("c-v:2")
-        , "paste paste paste": K("c-v:3")
-        , "(undo | scratch) [<1to100>]": K("c-z:%(1to100)d")
-        , "(undo undo | scratch scratch)": K("c-z:2")
-        , "(undo undo undo | scratch scratch scratch)": K("c-z:%3")
-        , "redo [<1to100>]": K("c-y:%(1to100)d")
-        , "redo redo": K("c-y:2")
-        , "redo redo redo": K("c-y:3")
-        , "find [<1to100>]": K("c-f:%(1to100)d")
-        , "find find": K("c-f:2")
-        , "find find find": K("c-f:3")
-        , "find now <text>": K("c-f") + T('%(text)s')
-        # files
-        , "(nuphyle | new file)": K("c-n")
-        , "(ophyle |  open file)": K("c-o")
-        , "(saphyle | save file)": K("c-s")
-        , "(saphylas | save file as)": K("cs-s")
-        , "close": K("c-w")
-        , "(filex | phaix) <file_extension>": T("%(file_extension)s")
-        , "to do [<text>]": T("TODO: %(text)s")
+        "(space | ace ) [<1to100>]": K("space")
+        , "slap [<1to100>]": K("enter:%(1to100)d")        
+        , "(tap | tab) [<1to100>]": K("tab:%(1to100)d")
+        , "escape [<1to100>]": K("escape:%(1to100)d")
+        , "backspace [<1to100>]": K("backspace:%(1to100)d")
+        , "delete [<1to100>]": K("delete:%(1to100)d")
+        # punctuation
+        , "(dot | period) [<1to100>]": K("dot:%(1to100)d")
+        , "(comma | cam)": K("comma")
+        , "(colon|coal) [<1to100>]": K("colon:%(1to100)d")
+        , "(semi colon|sem-col|sem-coal)": T(";")
+        , "(exclaim|clam)": K("exclamation")
+        , "(question-mark|quest)": K("question")
+        , "slash": K("slash")
+        , "backslash": K("backslash")
+        , "sing": K("apostrophe")
+        , "quote": K("dquote")
+        , "(hyphen|hive)": K("hyphen")
+        # operator
+        , "(under | ska)": K("underscore")
+        , "plus [<1to100>]": K("plus:%(1to100)d")
+        , "minus [<1to100>]": K("minus:%(1to100)d")
+        , "equal[s] [<1to100>]": K("equal:%(1to100)d")
+        , "percent": K("percent")        
+        , "dollar": K("dollar")
+        , "(star | asterix | asterisk)": K("asterisk")
+        , "hash [<1to100>]": K("hash:%(1to100)d")
+        , "tilde": K("tilde")
+        , "lat": T("@")
+        , "(ampersand | amper)":K("ampersand")
+        , "pipe": K("bar")
+        # parenthesis
+        , "laip": K("lparen")
+        , "rape": K("rparen")
+        , "lack": K("lbracket")
+        , "rack": K("rbracket")
+        , "lace": K("lbrace")
+        , "race": K("rbrace")
+        , "lang": T("<")
+        , "rang": T(">")
+        # operator combo
+        , "greater than": T(" > ")
+        , "less than": T(" < ")
+        , "g-equal": T(" >= ")
+        , "l-equal": T(" <= ")
+        , "(triple arrow | tri-lang)": T(" <<< ")
+        , "minus-equal": T(" -= ")
+        , "plus-equal": T(" += ")
+        , "star-equal": T(" *= ")
+        , "minus-minus": T("--")
+        , "plus-plus": T("++")
+        , "double-equal": T(" == ")
+        , "(not-equal | nequal)": T(" != ")
+        , "logical-and": T(" && ")
+        , "logical-or": T(" || ")
+        , "left-shift": T(" << ")
+        , "right-shift": T(" >> ")
+        # space combo
+        , "spive": T(" -")
+        , "pive": T("- ")
+        , "pivak": T("- [ ]")
+        , "scol": T(": ")
+        , "spipe": T(" | ")
+        , "splus": T(" + ")
+        , "spequal": T(" = ")
+        , "scam": T(", ")
+        , "shash": T("# ")
+        , "lote": K("lparen,quote")
         # function keys
         , "F1 [key]": K("f1")
         , "F2 [key]": K("f2")
@@ -258,52 +164,32 @@ class KeyboardRule(MappingRule):
         , "F10 [key]": K("f10")
         , "F11 [key]": K("f11")
         , "F12 [key]": K("f12")
+    }
+    defaults = {
+        "1to100":1
+    }
+    extras = [
+        chc_base._1to100
+    ]
+
+class NavigatingKeysRule(MappingRule):
+    mapping = {
         # Char
-        , "right [<1to100>]": K("right:%(1to100)d")
-        , "right right": K("right:2")
-        , "right right right": K("right:3")
+        "right [<1to100>]": K("right:%(1to100)d")
         , "left [<1to100>]": K("left:%(1to100)d")
-        , "left left": K("left:2")
-        , "left left left": K("left:3")
         , "up [<1to100>]": K("up:%(1to100)d")
-        , "up up": K("up:2")
-        , "up up up": K("up:3")
         , "down [<1to100>]": K("down:%(1to100)d")
-        , "down down": K("down:2")
-        , "down down down": K("down:3")
         , "chuck [<1to100>]": K("delete:%(1to100)d")
-        , "chuck chuck": K("delete:2")
-        , "chuck chuck chuck": K("delete:3")
-        , "(chook | backspace) [<1to100>]": K("backspace:%(1to100)d")
-        , "chook chook": K("backspace:2")
-        , "chook chook chook": K("backspace:3")
+        , "chook [<1to100>]": K("backspace:%(1to100)d")
         # Words
-        , "(forward | foo) [<1to100>]": K("c-right:%(1to100)d")
-        , "foo foo": K("c-right:2")
-        , "foo foo foo": K("c-right:3")
+        , "foo [<1to100>]": K("c-right:%(1to100)d")
         , "sell foo [<1to100>]": K("sc-right:%(1to100)d")
         , "dee foo [<1to100>]": K("sc-right:%(1to100)d, backspace")
-        , "(backward | bar) [<1to100>]": K("c-left:%(1to100)d")
-        , "bar bar": K("c-left:2")
-        , "bar bar bar": K("c-left:3")
+        , "bar [<1to100>]": K("c-left:%(1to100)d")
         , "sell bar [<1to100>]": K("sc-left:%(1to100)d")
         , "dee bar [<1to100>]": K("sc-left:%(1to100)d, backspace")
         , "sellword [<1to100>]": K("c-left") + K("sc-right:%(1to100)d")
-        , "sell-all": K("c-a")
         # Lines
-        , "slap [<1to100>]": K("enter:%(1to100)d")
-        , "slap slap": K("enter:2")
-        , "slap slap slap": K("enter:3")
-        , "eslap": K("end, enter")
-        , "dotslap": K("end, dot, enter")
-        , "camslap": K("end, comma, enter")
-        , "semslap": K("end") + T(";") + K("enter")
-        , "coalslap": K("end, colon, enter")
-        , "altslap": K("a,enter")
-        , "(downslap | deeslap)": K("down,enter")
-        , "(tap | tab) [<1to100>]": K("tab:%(1to100)d")
-        , "tab tab": K("tab:2")
-        , "tab tab tab": K("tab:3")
         , "home": K("home")
         , "end": K("end")
         , "u-end": K("up,end")
@@ -316,53 +202,126 @@ class KeyboardRule(MappingRule):
         , "selline [<0to100>]": K("home") + K("s-down:%(0to100)d") + K("s-end")
         , "deeline [<0to100>]": K("home") + K("s-down:%(0to100)d") + K("s-end") + K("backspace:2")
         , "coline [<0to100>]": K("home") + K("s-down:%(0to100)d") + K("s-end") + K("c-c")
+        , "cutline [<0to100>]": K("home") + K("s-down:%(0to100)d") + K("s-end") + K("c-x")
         , "dupline  [<0to100>] [<1to10>]": K("home") + K("s-down:%(0to100)d") + K("s-end") + P("20") + K("c-c") + P("20") + K("enter") + K("c-v:%(1to10)d") # c-c needs to be isolated with medium pauses!!!
+        # Line breaks
+        , "eslap": K("end, enter")
+        , "dotslap": K("end, dot, enter")
+        , "camslap": K("end, comma, enter")
+        , "semslap": K("end") + T(";") + K("enter")
+        , "coalslap": K("end, colon, enter")
+        , "altslap": K("a,enter")
+        , "(downslap | deeslap)": K("down,enter")
+        # Special line breaks
+        , "slah (cam | cama)": (K("end,enter") + T(", "))
+        , "(slah amp | slamper)": (K("end,enter") + T("& "))
+        , "slah amp amp": (K("end,enter") + T("&& "))
+        , "slah pipe": (K("end,enter") + T("| "))
+        , "slah pipe pipe": (K("end,enter") + T("|| "))
+        , "slah plus": (K("end,enter") + T("+ "))
+        , "slah minus": (K("end,enter") + T("- "))
         # Pages
         , "(page up | pup) [<1to100>]": K("pgup:%(1to100)d")
-        , "pup pup": K("pgup:2")
-        , "pup pup pup": K("pgup:3")
         , "(page down | poun) [<1to100>]": K("pgdown:%(1to100)d")
-        , "poun poun": K("pgdown:2")
-        , "poun poun poun": K("pgdown:3")
         , "go to home": K("c-home")
         , "go to end": K("c-end")
-        ## special key sequences
-        , "<metakey> <letter_or_digit>": K("%(metakey)s-%(letter_or_digit)s")
+        , "sell-all": K("c-a")
+    }
+    defaults = {
+        "0to100":1,
+        "1to10":1,
+        "1to100":1
+    }
+    extras = [
+        chc_base._0to100,
+        chc_base._1to10,
+        chc_base._1to100
+    ]
+
+class ShortcutRule(MappingRule):
+    mapping = {
+        # general
+        "quit [<1to100>]": K("escape:%(1to100)d")
+        , "(cop | copy) [<1to100>]": K("c-c:%(1to100)d")
+        , "cut [<1to100>]": K("c-x:%(1to100)d")
+        , "paste [<1to100>]": K("c-v:%(1to100)d")
+        , "(undo | scratch) [<1to100>]": K("c-z:%(1to100)d")
+        , "redo [<1to100>]": K("c-y:%(1to100)d")
+        , "find [<1to100>]": K("c-f:%(1to100)d")
+        , "find now <text>": K("c-f") + T('%(text)s')
+        , "close": K("c-w")
+        # files
+        , "(nuphyle | new file)": K("c-n")
+        , "(ophyle |  open file)": K("c-o")
+        , "(saphyle | save file)": K("c-s")
+        , "(saphylas | save file as)": K("cs-s")
+    }
+    defaults = {
+        "1to100":1,
+        "text":""
+    }
+    extras = [
+        chc_base.text,
+        chc_base._1to100
+    ]
+
+class MetaKeysRule(MappingRule):
+    mapping = {
+        "<metakey> <letter_or_digit>": K("%(metakey)s-%(letter_or_digit)s")
         , "<metakey> <direction>": K("%(metakey)s-%(direction)s")
         , "winmove <direction> [<1to10>]": K("sw-%(direction)s:%(1to10)d")
         , "shift tab": K("s-tab")
         , "(metapoint | metadot)": K("a-dot")
         , "metaquote": K("a-quote")
         , "(alt slash | aslash)": K("a-slash")
-        , "escape": K("escape")
+        , "context": K("apps")
     }
     defaults = {
-        "0to100":0,
-        "1to100":1,
-        "0to10":0,
         "1to10":1,
         "text":""
     }
     extras = [
         chc_base.text,
-        chc_base._0to10,
-        chc_base._0to100,
         chc_base._1to10,
-        chc_base._1to100,
         chc_base.letter_or_digit,
         chc_base.direction,
         chc_base.metakey,
-        chc_base.file_extension
     ]
 
 #---------------------------------------------------------------------------
-# Formatted dictation
+# Dictation
 #---------------------------------------------------------------------------
 
-def format_say(text):       # Function name must start with "format_".
-    """say <text>"""        # Docstring defining spoken-form.
-    dictation = str(text)        # Get written-form of dictated dictation.
-    return dictation                  # Put underscores between words.
+class DictationRule(MappingRule):
+    exported = True
+    mapping = dict(
+        ("%s <text>"%k, (T(v)+T("%(text)s")))
+        for k, v in chc_base.characters.items()
+    )
+    mapping.update(
+        {
+            "(space | ace) <text>": T(" %(text)s")
+            , "<text> (space | ace)": T("%(text)s ")
+            , "sing <text>": T("'%(text)s'")
+            , "quote <text>": T('"%(text)s"')
+            , "<text> spequals": T("%(text)s = ")
+            , "<text> equals": T("%(text)s=")
+            , "<text> coal": T("%(text)s:")
+            , "<text> scol": T("%(text)s: ")
+            , "<text> cam": T("%(text)s,")
+            , "<text> scam": T("%(text)s, ")
+        }
+    )
+    extras = [
+        chc_base.text
+    ]
+
+# Format functions (by Tavis Rudd): Function name must start with "format_" and the Docstring defines the spoken-form.
+
+def format_say(text):       
+    """say <text>"""
+    dictation = str(text)
+    return dictation
     
 def format_says(text):
     """says <text>"""
@@ -467,64 +426,68 @@ class FormattedDictationRule(MappingRule):
     ]
 
 #---------------------------------------------------------------------------
-# Character Dictation
+# Text
 #---------------------------------------------------------------------------
-    
-class CharacterDictationRule(MappingRule):
-    exported = True
-    mapping = dict(
-        ("%s <text>"%k, (T(v)+T("%(text)s")))
-        for k, v in chc_base.characters.items()
-    )
-    mapping.update(
-        {
-            "(space | ace) <text>": T(" %(text)s")
-            , "<text> (space | ace)": T("%(text)s ")
-            , "sing <text>": T("'%(text)s'")
-            , "quote <text>": T('"%(text)s"')
-            , "<text> spequals": T("%(text)s = ")
-            , "<text> equals": T("%(text)s=")
-            , "<text> coal": T("%(text)s:")
-            , "<text> scol": T("%(text)s: ")
-            , "<text> cam": T("%(text)s,")
-            , "<text> scam": T("%(text)s, ")
-        }
-    )
+
+class PhraseRule(MappingRule):
+    mapping = {
+        "(filex | phaix) <file_extension>": T("%(file_extension)s")
+        , "to do [<text>]": T("TODO: %(text)s")
+    }
+    defaults = {
+        "text":""
+    }
     extras = [
         chc_base.text,
-        chc_base.character
+        chc_base.file_extension
     ]
-# TODO: Check if here only charaterS is needed
-
     
 #---------------------------------------------------------------------------
-# Repeat
+# OS specific
 #---------------------------------------------------------------------------
 
-def _create_main_sequence():
-    alternatives = [
-        RuleRef(rule=AlphaRule())
-        , RuleRef(rule=CharRule())
-        , RuleRef(rule=LetterSeqRule())
-        , RuleRef(rule=LiteralRule())
-        , RuleRef(rule=KeyboardRule())
+class WindowsRule(MappingRule):
+    mapping = {
+        #, "closapp": K("win:down, a-f4, win:up") # switch
+        #, "closapp": K("alt:down, f4, alt:up")
+        #, "closapp": K("a-f4")
+        "closapp": Function(lambda: natlink.recognitionMimic(["close", "window"]))
+        #, "swatch": K("alt:down") + P("20") + K("tab") + P("20") + K("alt:up") # switch app
+        #, "swatch": K("win:down, a-tab, win:up") # switch tab 
+        , "swatch": StartApp("explorer.exe", chc_base.dir_bin + "window-switch.lnk")
+        , "swatcha": StartApp("explorer.exe", chc_base.dir_bin + "window-switch.lnk") + K("enter")
+        , "swap": K("c-tab") # switch tab
+        , "putty <host_name>": DynStartApp(chc_base.exe_putty, "-load", "%(host_name)s")
+        , "sound settings": StartApp("explorer.exe", chc_base.dir_bin + "Sound.lnk")
+    }
+    extras = [
+        chc_base.host_name
     ]
-    # adding too many rules doesn't work because the grammar becomes
-    # too complex for natlink to recognize it. It's also sensitive
-    # to the maximum number of repetitions
 
-    return Repetition(Alternative(alternatives),
-                      min=1, max=6,     # barfs at >7
-                      name="sequence")
+#---------------------------------------------------------------------------
+# Dragon
+#---------------------------------------------------------------------------
 
-class RepeatRule(CompoundRule):
-    spec = "[<reps>] <sequence> [then]"
-    extras = [_create_main_sequence(), IntegerRef("reps", 1, 100)]
-    defaults = {"reps": 1}
+class DragonRule(MappingRule):
+    mapping = {
+        "(go-to-sleep | snore | mic-sleep)": Function(lambda: natlink.setMicState("sleeping"))
+        , "(lock-Dragon|turn-mic-off)": Function(lambda: natlink.setMicState("off"))
+        , "german profile": Function(lambda: natlink.saveUser() + natlink.openUser("Codebold german"))
+        , "englisches Profil": Function(lambda: natlink.saveUser() + natlink.openUser("Codebold"))
+        , "reload grammar[s]": Function(lambda: updateAllGrammars())
+        , "reload <grammar>": GrammarUpdate()
+        , "como": Function(lambda: natlink.recognitionMimic(["switch", "to", "command", "mode"]))
+        , "diemo": Function(lambda: natlink.recognitionMimic(["start", "dictation", "mode"]))
+        , "nomo": Function(lambda: natlink.recognitionMimic(["normal", "mode", "on"]))
+        , "sleemo": Function(lambda: natlink.recognitionMimic(["go", "to", "sleep"]))
+        , "dictation": Function(lambda: natlink.recognitionMimic(["show", "dictation", "box"]))
+        , "dictox": Function(lambda: natlink.recognitionMimic(["normal", "mode", "on"])) + Function(lambda: natlink.recognitionMimic(["show", "dictation", "box"]))
+        , "transfox": Function(lambda: natlink.recognitionMimic(["click", "transfer"])) + Function(lambda: natlink.recognitionMimic(["command", "mode", "on"]))
+        , "blitz NatLink": Function(blitz_natlink_status)
+        , "show NatLink": Function(show_natlink_status)
+    }
+    extras = [
+        chc_base.grammar
+    ]
 
-    def _process_recognition(self, node, extras):
-        sequence = extras["sequence"]
-        count = extras["reps"]
-        for i in range(count):
-            for action in sequence:
-                action.execute()
+

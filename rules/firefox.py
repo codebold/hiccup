@@ -15,10 +15,23 @@ from dragonfly import (
 # Core Rule
 #---------------------------------------------------------------------------
 
+class ShortcutRule(MappingRule):
+    mapping = {
+        "find [<1to100>]": K("escape") + K("slash")
+        , "find now <text>": K("escape") + K("slash") + T('%(text)s')
+    }
+    defaults = {
+        "1to100":1,
+        "text":""
+    }
+    extras = [
+        chc_base.text,
+        chc_base._1to100
+    ]
+
 class CoreRule(MappingRule):
     mapping = {
         "command": K("escape") + K("colon")
-        , "find": K("escape") + K("slash")
         # pages
         , "open": K("escape") + K("t")
         , "open <text>": K("escape") + firefox("tabopen %(text)s", False) + P("20") + K("tab/20,enter")
@@ -48,7 +61,7 @@ class CoreRule(MappingRule):
         , "next": K("escape") + K("n")
     }
     defaults = {
-                "text":""
+        "text":""
     }
     extras = [
         chc_base.text,

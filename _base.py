@@ -2,14 +2,15 @@ import logging
 import time
 import traceback
 
-import rules.base as base
-
+import builder
 import loader
+
+import rules.base as base
+import rules.firefox as firefox
 import rules.choices.base as chc_base
 
 from dragonfly import (
-    AppContext,
-    Grammar
+    AppContext
 )
 
 import rules.util as util
@@ -47,17 +48,27 @@ def load():
     reload(chc_base)
     reload(util)
     reload(base)
+    reload(firefox)
 
     timing_stats("Load base grammar")
-    
-    grammar = Grammar("Base", context=AppContext())
-    grammar.add_rule(base.RepeatRule())
-    grammar.add_rule(base.FormattedDictationRule())
-    grammar.add_rule(base.CharacterDictationRule())
-    grammar.add_rule(base.WindowsRule())
-    grammar.add_rule(base.DragoflyRule())
-    grammars.append(grammar)
-    
+
+    grammars.append(
+        builder.GrammarBuilder("Base", context=AppContext())
+        .add_rule(base.CharacterRule())
+        .add_rule(base.LiteralRule())
+        .add_rule(base.StandardKeysRule())
+        .add_rule(base.NavigatingKeysRule())
+        .add_rule(base.MetaKeysRule())
+        .add_competitive_mapping_rule(base.ShortcutRule(), [firefox.ShortcutRule(context=AppContext(executable="firefox"))])
+        # .add_competitive_repeat_rule(builder.RepeatRuleComponents(None, [base.CharacterRule(), base.LiteralRule(), base.StandardKeysRule(), base.NavigatingKeysRule(), base.MetaKeysRule(), base.ShortcutRule()]), [builder.RepeatRuleComponents(AppContext(executable="firefox"), [None, None, None, None, None, firefox.KeyboardRule()])])
+        .add_rule(base.DictationRule())
+        .add_rule(base.FormattedDictationRule())
+        .add_rule(base.PhraseRule())
+        .add_rule(base.WindowsRule())
+        .add_rule(base.DragonRule())
+        .build()
+    )
+        
     grammarLoader = loader.GrammarLoader(grammars)
     grammarLoader.load()
 
