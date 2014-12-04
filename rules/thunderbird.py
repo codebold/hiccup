@@ -1,15 +1,13 @@
-import choices.base as chc_base
+from dragonfly import MappingRule
 
-from util import (
+from actions.action_application import firefox
+from actions.action_shortcut import (
     K,
     T,
-    P,
-    firefox
+    P
 )
 
-from dragonfly import (
-    MappingRule
-)
+import choices.base as chc_base
 
 #---------------------------------------------------------------------------
 # Core Rule

@@ -1,6 +1,4 @@
-from dragonfly import (
-    Choice
-)
+from dragonfly import Choice
 
 #---------------------------------------------------------------------------
 # CSS

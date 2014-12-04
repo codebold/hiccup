@@ -1,15 +1,13 @@
-import choices.base as chc_base
+from dragonfly import MappingRule
 
-from dragonfly import (
-    MappingRule
-)
-
-from util import (
+from actions.action_application import emacs
+from actions.action_shortcut import (
     K,
     T,
-    P,
-    emacs
+    P
 )
+
+import choices.base as chc_base
 
 #---------------------------------------------------------------------------
 # Core Rule

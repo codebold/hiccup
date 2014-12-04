@@ -2,22 +2,19 @@ import logging
 import time
 import traceback
 
-import builder
-import loader
+from dragonfly import AppContext
+
+import grammar.builder as builder
+import grammar.loader as loader
 
 import rules.base as base
 import rules.firefox as firefox
 import rules.choices.base as chc_base
 
-from dragonfly import (
-    AppContext
-)
-
-import rules.util as util
-
 #---------------------------------------------------------------------------
 # Setup
 #---------------------------------------------------------------------------
+
 logging.basicConfig() 
 #logging.basicConfig(level=10)
 grammarLoader = None
@@ -46,7 +43,6 @@ def load():
     timing_stats("Reload base grammar's rules")
     
     reload(chc_base)
-    reload(util)
     reload(base)
     reload(firefox)
 
@@ -78,9 +74,13 @@ def load():
 #---------------------------------------------------------------------------
 # Main
 #---------------------------------------------------------------------------
+
 try:
     load()
 except:
+    print '-'*10
+    traceback.print_exc()
+    
     try:
         unload()
     except:

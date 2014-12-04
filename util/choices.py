@@ -1,14 +1,11 @@
-from dragonfly import (
-    Choice
-)
-from os import (
-    makedirs
-)
+from os import makedirs
 from os.path import (
     expanduser,
     exists,
     join
 )
+
+from dragonfly import Choice
 
 user_choices_dir = join(expanduser("~"), ".dragonfly")
 
@@ -36,9 +33,6 @@ def parse_user_choices(choices):
 
     return result
     
-    
-
-
 def ensure_directory(directory):
     if not exists(directory):
         makedirs(directory)

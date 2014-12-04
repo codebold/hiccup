@@ -1,15 +1,13 @@
-import choices.base as chc_base
-import choices.web as chc_web
+from dragonfly import MappingRule
 
-from dragonfly import (
-    MappingRule
-)
-
-from util import (
+from actions.action_shortcut import (
     K,
     T,
     P
 )
+
+import choices.base as chc_base
+import choices.web as chc_web
 
 #---------------------------------------------------------------------------
 # Unused

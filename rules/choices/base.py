@@ -1,17 +1,15 @@
 import string
 
-from util import (
-    combine_choices,
-    parse_user_choices
-)
-
 from dragonfly import (
     Choice,
     Dictation,
     IntegerRef,
     NumberRef,
-    Key,
-    Text,
+)
+
+from util.choices import (
+    combine_choices,
+    parse_user_choices
 )
 
 #---------------------------------------------------------------------------

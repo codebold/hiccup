@@ -1,15 +1,13 @@
-import choices.base as chc_base
+from dragonfly import MappingRule
 
-from dragonfly import (
-    MappingRule
-)
-
-from util import (
+from actions.action_shortcut import (
     K,
     T,
     P,
     M
 )
+
+import choices.base as chc_base
 
 #---------------------------------------------------------------------------
 # Core Rule
@@ -127,6 +125,8 @@ class GitRule(MappingRule):
         , "git initial commit": T('git commit -m "Initial commit.\n"')
         , "git commit": T('git commit -m ""') + K("left")
         , "git commit all": T('git commit -am ""') + K("left")
+        , 'git amend': T("git commit --amend --no-edit\n")
+        , 'git amend message': T("git commit --amend\n")
         , "git init": T("git init\n")
         , "git remote [show]": T("git remote -v\n")
         , "git remote add": T("git remote add ")
@@ -143,6 +143,7 @@ class GitRule(MappingRule):
         , "git reset hard origin": T("git reset --hard origin/master")
         , "git branch": T("git branch ")
         , "git branch <text>": T("git branch %(text)s ")
+        , "git branches": T("git branch -l\n")
         , "git clone": T("git clone ")
         , "git checkout": T("git checkout ")
         , "git checkout <text>": T("git checkout %(text)s ")

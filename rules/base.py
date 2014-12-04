@@ -1,4 +1,3 @@
-import choices.base as chc_base
 import natlink
 
 from dragonfly import (
@@ -13,25 +12,22 @@ from dragonfly import (
     BringApp
 )
 
-from actions.action_dynstartapp import (
-    DynStartApp
-)
-
-from util import (
-    K,
-    T,
-    P,
+from actions.action_application import windows
+from actions.action_dragon import (
     updateGrammar,
     updateAllGrammars,
     GrammarUpdate,
-    windows,
     blitz_natlink_status,
     show_natlink_status
 )
-
-from subprocess import (
-    call
+from actions.action_dynstartapp import DynStartApp
+from actions.action_shortcut import (
+    K,
+    T,
+    P
 )
+
+import choices.base as chc_base
 
 #---------------------------------------------------------------------------
 # Characters
