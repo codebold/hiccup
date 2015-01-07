@@ -47,7 +47,7 @@ class GrammarBuilder(object):
                 base_context = ~extension_rule._context
             else:
                 base_context = base_context & ~extension_rule._context
-            rules.append(self._combine_mapping_rules(base_rule, extension_rule, extension_rule._context))
+            rules.append(self._combine_mapping_rules(base_rule._name + " (+" + extension_rule._name + ")", base_rule, extension_rule, extension_rule._context))
 
         base_rule._context = base_context
         rules.append(base_rule)
@@ -57,8 +57,7 @@ class GrammarBuilder(object):
         
         return self
 
-    def _combine_mapping_rules(self, base_rule, extension_rule, context):
-        name = "" + base_rule._name + " (+" + extension_rule._name + ")"
+    def _combine_mapping_rules(self, name, base_rule, extension_rule, context):
         mapping = base_rule._mapping.copy()
         mapping.update(extension_rule._mapping)
         extras_dict = base_rule._extras.copy()
@@ -88,7 +87,7 @@ class GrammarBuilder(object):
                 base_context = ~extension_rule._context
             else:
                 base_context = base_context & ~extension_rule._context
-            rules.append(self._combine_repeat_rules(base_rule, extension_rule, extension_rule.context, extension_rule.name))
+            rules.append(self._combine_repeat_rules(extension_rule._name, base_rule, extension_rule, extension_rule.context))
 
         base_rule._context = base_context
         rules.append(RepeatRule(base_rule.name, base_rule.context, base_rule.rules))
@@ -98,12 +97,12 @@ class GrammarBuilder(object):
         
         return self
 
-    def _combine_repeat_rules(self, base_rules, extension_rules, context, name):
+    def _combine_repeat_rules(self, name, base_rules, extension_rules, context):
         rules = list()
         
         for i in range(len(base_rules.rules)):
             if extension_rules.rules[i]:
-                rules.append(self._combine_mapping_rules(base_rules.rules[i], extension_rules.rules[i], None))
+                rules.append(self._combine_mapping_rules(base_rules.rules[i]._name + " (+" + extension_rules.rules[i]._name + ") [" + str(context)+ "]", base_rules.rules[i], extension_rules.rules[i], None))
             else:
                 rules.append(base_rules.rules[i])
 

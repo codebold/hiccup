@@ -1,6 +1,6 @@
 from dragonfly import MappingRule
 
-from actions.action_application import firefox
+from actions.action_application import Firefox
 from actions.action_shortcut import (
     K,
     T,
@@ -13,7 +13,7 @@ import choices.base as chc_base
 # Core Rule
 #---------------------------------------------------------------------------
 
-class ShortcutRule(MappingRule):
+class FirefoxShortcutRule(MappingRule):
     mapping = {
         "find [<1to100>]": K("escape") + K("slash")
         , "find now <text>": K("escape") + K("slash") + T('%(text)s')
@@ -27,17 +27,17 @@ class ShortcutRule(MappingRule):
         chc_base._1to100
     ]
 
-class CoreRule(MappingRule):
+class FirefoxCoreRule(MappingRule):
     mapping = {
         "command": K("escape") + K("colon")
         # pages
         , "open": K("escape") + K("t")
-        , "open <text>": K("escape") + firefox("tabopen %(text)s", False) + P("20") + K("tab/20,enter")
-        , "tropen <text>": K("escape") + firefox("tabopen %(text)s", False) + P("20") + K("tab/20")
+        , "open <text>": K("escape") + Firefox("tabopen %(text)s", False) + P("20") + K("tab/20,enter")
+        , "tropen <text>": K("escape") + Firefox("tabopen %(text)s", False) + P("20") + K("tab/20")
         , "tab open": K("escape") + K("o")
-        , "tab open <text>": K("escape") + firefox("open %(text)s", False) + P("20") + K("tab/20,enter")
-        , "tab tropen <text>": K("escape") + firefox("open %(text)s", False) + P("20") + K("tab/20")
-        , "help": K("escape") + firefox("helpall")
+        , "tab open <text>": K("escape") + Firefox("open %(text)s", False) + P("20") + K("tab/20,enter")
+        , "tab tropen <text>": K("escape") + Firefox("open %(text)s", False) + P("20") + K("tab/20")
+        , "help": K("escape") + Firefox("helpall")
         , "reload": K("escape") + K("r")
         , "reload uncached": K("escape") + K("R")
         # tabs

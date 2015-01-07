@@ -135,27 +135,54 @@ class GitRule(MappingRule):
         , "git remote add origin": T("git remote add origin git@projects.partenza.de:")
         , "git remote remove": T("git remote remove ")
         , "git push": T("git push\n")
+        , "git push force": T("git push --force\n")
         , "git push upstream": T("git push -u ")
         , "git push origin master": T("git push -u origin master\n")
         , "git pull": T("git pull\n")
         , "git status": T("git status\n")
-        , "git reset hard": T("git reset --hard")
+        , "git reset": T("git reset ")
+        , "git reset <text>": T("git reset %(text)s") + K("tab:3")
+        , "git reset head": T("git reset HEAD ")
+        , "git reset head <text>": T("git reset HEAD %(text)s") + K("tab:3")
+        , "git reset hard": T("git reset --hard ")
         , "git reset hard origin": T("git reset --hard origin/master")
+        , "git reset hard head": T("git reset --hard HEAD")
         , "git branch": T("git branch ")
         , "git branch <text>": T("git branch %(text)s ")
+        , "git branch move": T("git branch -m ")
+        , "git branch delete": T("git branch -D ")
+        , "git branch delete <text>": T("git branch -D %(text)s ")
         , "git branches": T("git branch -l\n")
         , "git clone": T("git clone ")
         , "git checkout": T("git checkout ")
-        , "git checkout <text>": T("git checkout %(text)s ")
+        , "git checkout <text>": T("git checkout %(text)s\n")
+        , "git checkout branch": T("git checkout -b ")
+        , "git checkout branch <text>": T("git checkout -b %(text)s\n")
         , "git diff": T("git diff ")
-        , "git diff head": T("git diff HEAD")
+        , "git diff head": T("git diff HEAD\n")
+        , "git diff master": T("git diff master..")
         , "git diff <text>": T("git diff %(text)s ")
+        , "git fetch": T("git fetch ")
+        , "git fetch <text>": T("git fetch %(text)s ")
+        , "git fetch origin": T("git fetch origin\n")
+        , "git fetch upstream": T("git fetch upstream\n")
+        , "git log": T("git log --stat \n")
+        , "git log <1to100>": T("git log --stat -%(1to100)s\n")
+        , "git log changes": T("git log -p \n")
+        , "git log changes <1to100>": T("git log -p -%(1to100)s\n")
+        , "git merge": T("git merge ")
+        , "git merge <text>": T("git merge %(text)s")        
+        , "git cherry pick": T("git cherry-pick ")
+        , "git cherry pick abort": T("git cherry-pick --abort\n")
+        , "git cherry pick continue": T("git cherry-pick --continue\n")
     }
     defaults = {
-        "text":""
+        "text":"",
+        "1to100":"1"
     }
     extras = [
-        chc_base.text
+        chc_base.text,
+        chc_base._1to100
     ]
 
 

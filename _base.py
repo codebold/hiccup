@@ -8,6 +8,7 @@ import grammar.builder as builder
 import grammar.loader as loader
 
 import rules.base as base
+import rules.emacs as emacs
 import rules.firefox as firefox
 import rules.choices.base as chc_base
 
@@ -45,18 +46,66 @@ def load():
     reload(chc_base)
     reload(base)
     reload(firefox)
+    reload(emacs)
 
     timing_stats("Load base grammar")
 
     grammars.append(
         builder.GrammarBuilder("Base", context=AppContext())
-        .add_rule(base.CharacterRule())
-        .add_rule(base.LiteralRule())
-        .add_rule(base.StandardKeysRule())
-        .add_rule(base.NavigatingKeysRule())
-        .add_rule(base.MetaKeysRule())
-        .add_competitive_mapping_rule(base.ShortcutRule(), [firefox.ShortcutRule(context=AppContext(executable="firefox"))])
-        # .add_competitive_repeat_rule(builder.RepeatRuleComponents(None, [base.CharacterRule(), base.LiteralRule(), base.StandardKeysRule(), base.NavigatingKeysRule(), base.MetaKeysRule(), base.ShortcutRule()]), [builder.RepeatRuleComponents(AppContext(executable="firefox"), [None, None, None, None, None, firefox.KeyboardRule()])])
+        .add_competitive_repeat_rule(
+            builder.RepeatRuleComponents(
+                "Base",
+                None,
+                [
+                    base.CharacterRule(),
+                    base.LiteralRule(),
+                    base.StandardKeysRule(),
+                    base.NavigatingKeysRule(),
+                    base.MetaKeysRule(),
+                    base.ShortcutRule()
+                ]
+            ),
+            [
+                builder.RepeatRuleComponents(
+                    "Base (Firefox)",
+                    AppContext(executable="firefox"),
+                    [
+                        None,
+                        None,
+                        None,
+                        None,
+                        None,
+                        firefox.FirefoxShortcutRule()
+                    ]
+                ),
+                # Combining the contexts of "Base (Emacs) and Base (Emacs via Putty)" with a logical or operator crashes natspeak.exe
+                # TODO: Check why this happens...
+                builder.RepeatRuleComponents(
+                    "Base (Emacs)",
+                    AppContext(executable="emacs"),
+                    [
+                        None,
+                        None,
+                        None,
+                        emacs.EmacsNavigatingKeysRule(),
+                        None,
+                        emacs.EmacsShortcutRule()
+                    ]
+                ),
+                builder.RepeatRuleComponents(
+                    "Base (Emacs via Putty)",
+                    AppContext(executable="putty", title="emacs"),
+                    [
+                        None,
+                        None,
+                        None,
+                        emacs.EmacsNavigatingKeysRule(),
+                        None,
+                        emacs.EmacsShortcutRule()
+                    ]
+                )
+            ]
+        )
         .add_rule(base.DictationRule())
         .add_rule(base.FormattedDictationRule())
         .add_rule(base.PhraseRule())

@@ -12,7 +12,7 @@ from dragonfly import (
     BringApp
 )
 
-from actions.action_application import windows
+from actions.action_application import WinCmd
 from actions.action_dragon import (
     updateGrammar,
     updateAllGrammars,
@@ -209,13 +209,13 @@ class NavigatingKeysRule(MappingRule):
         , "altslap": K("a,enter")
         , "(downslap | deeslap)": K("down,enter")
         # Special line breaks
-        , "slah (cam | cama)": (K("end,enter") + T(", "))
-        , "(slah amp | slamper)": (K("end,enter") + T("& "))
-        , "slah amp amp": (K("end,enter") + T("&& "))
-        , "slah pipe": (K("end,enter") + T("| "))
-        , "slah pipe pipe": (K("end,enter") + T("|| "))
-        , "slah plus": (K("end,enter") + T("+ "))
-        , "slah minus": (K("end,enter") + T("- "))
+        , "slah (cam | cama)": K("end,enter") + T(", ")
+        , "(slah amp | slamper)": K("end,enter") + T("& ")
+        , "slah amp amp": K("end,enter") + T("&& ")
+        , "slah pipe": K("end,enter") + T("| ")
+        , "slah pipe pipe": K("end,enter") + T("|| ")
+        , "slah plus": K("end,enter") + T("+ ")
+        , "slah minus": K("end,enter") + T("- ")
         # Pages
         , "(page up | pup) [<1to100>]": K("pgup:%(1to100)d")
         , "(page down | poun) [<1to100>]": K("pgdown:%(1to100)d")
@@ -454,7 +454,7 @@ class WindowsRule(MappingRule):
         , "swatcha": StartApp("explorer.exe", chc_base.dir_bin + "window-switch.lnk") + K("enter")
         , "swap": K("c-tab") # switch tab
         , "putty <host_name>": DynStartApp(chc_base.exe_putty, "-load", "%(host_name)s")
-        , "sound settings": StartApp("explorer.exe", chc_base.dir_bin + "Sound.lnk")
+        , "sound settings": WinCmd("C:\Windows\System32\mmsys.cpl")
     }
     extras = [
         chc_base.host_name

@@ -66,7 +66,6 @@ def load():
 
     grammars.append(
         builder.GrammarBuilder("Putty", context=AppContext(executable="putty"))
-        .add_rule(emacs.EmacsBaseRule())
         .add_rule(emacs.EmacsCoreRule())
         .add_rule(emacs.EshellRule())
         .add_rule(emacs.DiredRule())
@@ -77,20 +76,19 @@ def load():
             
     grammars.append(
         builder.GrammarBuilder("Firefox", context=AppContext(executable="firefox"))
-        .add_rule(firefox.CoreRule())
+        .add_rule(firefox.FirefoxCoreRule())
         .build()
     )
 
     grammars.append(
         builder.GrammarBuilder("Thunderbird", context=AppContext(executable="thunderbird"))
-        .add_rule(thunderbird.CoreRule())
+        .add_rule(thunderbird.ThunderbirdCoreRule())
         .build()
     )
 
     grammars.append(
         builder.GrammarBuilder("Emacs", context=AppContext(executable="emacs"))
         .add_rule(emacs.EmacsCoreRule())
-        .add_rule(emacs.EmacsBaseRule())
         .add_rule(emacs.DiredRule())
         .add_rule(emacs.ErcRule())
         .add_rule(emacs.EshellRule(context=AppContext(title="- EShell -")))
@@ -98,7 +96,7 @@ def load():
         .add_rule(shell.GitRule(context=AppContext(title="- EShell -")))
         .add_rule(web.HtmlCoreRule(context=AppContext(title="- Web -")))
         .add_rule(web.HtmlTemplateRule(context=AppContext(title="- Web -")))
-        .add_rule(emacs.HtmlRule(context=AppContext(title="- Web -")))
+        .add_rule(emacs.EmacsHtmlRule(context=AppContext(title="- Web -")))
         .add_rule(web.CssCoreRule(context=AppContext(title="- CSS -")))
         .add_rule(shell.IrcRule(context=AppContext(title="- ERC -")))
         .build()
