@@ -118,7 +118,7 @@ characters = {
     , "rack":"]"
     , "(hyphen | hive)":"-"
     , "(space | spa | paa)":" "
-    , "(under[score] | score)":"_"
+    , "(under | ska)":"_"
     , "slash":"/"
     , "backslash":"\\"
     , "cam":","
