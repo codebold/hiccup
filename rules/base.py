@@ -26,6 +26,25 @@ from actions.action_shortcut import (
     T,
     P
 )
+from actions.action_text import (
+    CamelCase,
+    PascalCase,
+    Capitalize,
+    UpperCase,
+    LowerCase,
+    SentenceCase,
+    SnakeCase,
+    ScreamingSnakeCase,
+    LispCase,
+    ScreamingLispCase,
+    TrainCase,
+    NoSpaces,
+    UpperCaseNoSpaces,
+    LowerCaseNoSpaces,
+    Slashify,
+    Bashify,
+    Dotify
+)
 
 import choices.base as chc_base
 
@@ -312,111 +331,28 @@ class DictationRule(MappingRule):
         chc_base.text
     ]
 
-# Format functions (by Tavis Rudd): Function name must start with "format_" and the Docstring defines the spoken-form.
-
-def format_say(text):       
-    """say <text>"""
-    dictation = str(text)
-    return dictation
-    
-def format_says(text):
-    """says <text>"""
-    dictation = str(text)
-    return dictation + " "
-
-def format_cap_say(text):
-    """cap say <text>"""
-    words = str(text).split(" ")
-    return words[0].capitalize() + " ".join(w for w in words[1:])
-
-def format_score(text):
-    """score <text>"""
-    words = [word.lower() for word in str(text).split(" ")]
-    return "_".join(words)
-
-def format_path(text):
-    """path <text>"""
-    dictation = str(text)
-    if dictation.startswith("."):
-        dictation = ". " + dictation[1:]
-    return "/".join(dictation.split(" "))
-
-def format_hyphen_word(text):
-    """hi-word <text>"""
-    dictation = str(text)
-    return "-".join(dictation.split(" "))
-
-def format_dot_word(text):
-    """dot-word <text>"""
-    dictation = str(text)
-    return ".".join(dictation.split(" "))
-
-def format_studley(text):
-    """studley <text>"""
-    words = [word.capitalize() for word in str(text).split(" ")]
-    return "".join(words)
-
-def format_camel(text):
-    """camel <text>"""
-    words = str(text).split(" ")
-    return words[0] + "".join(w.capitalize() for w in words[1:])
-
-def format_under_function(text):
-    """under func <text>"""
-    dictation = str(text)
-    return "_".join(dictation.split(" ")) + "("
-
-def format_studley_function(text):
-    """studley func <text>"""
-    dictation = str(text)
-    words = [word.capitalize() for word in dictation.split(" ")]
-    return "".join(words) + "("
-
-def format_camel_function(text):
-    """camel func <text>"""
-    dictation = str(text)
-    return "_".join(dictation.split(" ")) + "("
-
-def format_one_word(text):
-    """one word <text>"""
-    dictation = str(text)
-    return "".join(dictation.split(" "))
-
-def format_upper_one_word(text):
-    """[one word] upper <text>"""
-    dictation = str(text)
-    words = [word.upper() for word in dictation.split(" ")]
-    return "".join(words)
-
-def format_lower_one_word(text):
-    """[one word] lower <text>"""
-    dictation = str(text)
-    words = [word.lower() for word in dictation.split(" ")]
-    return "".join(words)
-
-def format_upper_score(text):
-    """upper score <text>"""
-    dictation = str(text)
-    words = [word.upper() for word in dictation.split(" ")]
-    return "_".join(words)
-
-format_functions = {
-#    "jive <dictation>": run('(dss/clojure-join-words "%(dictation)s")')
-#    , "keyword <dictation>": run('(dss/clojure-insert-keyword "%(dictation)s")')
-    }
-
-for name, function in locals().items():
-    if name.startswith("format_") and callable(function):
-        spoken_form = function.__doc__.strip()
-        def wrap_function(function):
-            def _function(text):
-                T(function(text)).execute()
-            return Function(_function)
-        format_functions[spoken_form] = wrap_function(function)
-
 class FormattedDictationRule(MappingRule):
-    exported = True
-    mapping = format_functions
+    mapping = {
+        "say <text>": T("%(text)s")
+        , "says <text>": T("%(text)s ")
+        , "cap say <text>": SentenceCase("%(text)s")
+        , "all cap[s] [say] <text>": Capitalize("%(text)s")
+        , "camel <text>": CamelCase("%(text)s")
+        , "pascal <text>": PascalCase("%(text)s")
+        , "upper <text>": UpperCase("%(text)s")
+        , "lower <text>": LowerCase("%(text)s")
+        , "snake <text>": SnakeCase("%(text)s")
+        , "up snake <text>": ScreamingSnakeCase("%(text)s")
+        , "lisp <text>": LispCase("%(text)s")
+        , "up lisp <text>": ScreamingLispCase("%(text)s")
+        , "train <text>": TrainCase("%(text)s")
+        , "no spaces <text>": NoSpaces("%(text)s")
+        , "up no spaces <text>": UpperCaseNoSpaces("%(text)s")
+        , "down no spaces <text>": LowerCaseNoSpaces("%(text)s")
+        , "slashify <text>": Slashify("%(text)s")
+        , "bashify <text>": Bashify("%(text)s")
+        , "dotify <text>": Dotify("%(text)s")
+    }
     extras = [
         chc_base.text
     ]
@@ -429,6 +365,7 @@ class PhraseRule(MappingRule):
     mapping = {
         "(filex | phaix) <file_extension>": T("%(file_extension)s")
         , "to do [<text>]": T("TODO: %(text)s")
+        , "camelify <text>": CamelCase("%(text)s")
     }
     defaults = {
         "text":""
@@ -437,7 +374,7 @@ class PhraseRule(MappingRule):
         chc_base.text,
         chc_base.file_extension
     ]
-    
+
 #---------------------------------------------------------------------------
 # OS specific
 #---------------------------------------------------------------------------
