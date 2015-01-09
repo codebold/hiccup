@@ -175,6 +175,16 @@ class GitRule(MappingRule):
         , "git cherry pick": T("git cherry-pick ")
         , "git cherry pick abort": T("git cherry-pick --abort\n")
         , "git cherry pick continue": T("git cherry-pick --continue\n")
+        , "git tag": T("git tag\n")
+        , "git tag list": T("git tag -l ''") + K("left")
+        , "git tag list <text>": T("git tag -l '%(text)s'") + K("left")
+        , "git tag create": T("git tag -a v0.0 -m \"\"") + K("left")
+        , "git tag create <text>": T("git tag -a vx -m \"%(text)s\"") + K("left")
+        , "git tag delete": T("git tag -d")
+        , "git tag push": T("git push --tags\n")
+        , "git push tag[s]": T("git push --tags\n")
+        , "git show": T("git show ")
+        , "git show <text>": T("git show %(text)s ")
     }
     defaults = {
         "text":"",

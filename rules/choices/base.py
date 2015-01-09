@@ -1,3 +1,4 @@
+
 import string
 
 from dragonfly import (
@@ -254,10 +255,6 @@ common_folders = {
     , "downloads":"~/Downloads/"
     , "emacs":'~/.emacs.d/'
     , "C":'c:/'
-    , "macros":'c:/Python/NatLink/NatLink/MacroSystem/'
-    , "rules":'c:/Python/NatLink/NatLink/MacroSystem/rules/'
-    , "actions":'c:/Python/NatLink/NatLink/MacroSystem/actions/'
-    , "dragonfly":'C:\Python\DragonFly\dragonfly\dragonfly'
     , "root":'/root/'
     , "conf":"/etc/"
     , "conf apache":"/etc/apache2/"

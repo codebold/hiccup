@@ -61,6 +61,7 @@ def load():
                                                | AppContext(executable="cmd")
                                                | AppContext(executable="sh")))
         .add_rule(shell.ShellCoreRule())
+        .add_rule(shell.GitRule())        
         .build()
     )
 
