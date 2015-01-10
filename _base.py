@@ -10,6 +10,7 @@ import grammar.loader as loader
 import rules.base as base
 import rules.emacs as emacs
 import rules.firefox as firefox
+import rules.vim as vim
 import rules.choices.base as chc_base
 
 #---------------------------------------------------------------------------
@@ -102,6 +103,18 @@ def load():
                         emacs.EmacsNavigatingKeysRule(),
                         None,
                         emacs.EmacsShortcutRule()
+                    ]
+                ),
+                builder.RepeatRuleComponents(
+                    "Base (Vim via Putty)",
+                    AppContext(executable="putty", title="vi"),
+                    [
+                        None,
+                        None,
+                        None,
+                        vim.VimNavigatingKeysRule(),
+                        None,
+                        vim.VimShortcutRule()
                     ]
                 )
             ]

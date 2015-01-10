@@ -242,7 +242,10 @@ grammar = Choice("grammar", grammars)
 #---------------------------------------------------------------------------
 
 common_files = {
-    "emacs config":"~/.emacs.d/init.el"
+    "password[s]":"/etc/passwd"
+    , "group[s]":"/etc/group"
+    , "shadow":"/etc/shadow"        
+    , "emacs config":"~/.emacs.d/init.el"
     , "emacs alias":"~/.emacs.d/eshell/alias"
     , "emacs dictionary":"~/.emacs.d/dict/dict"
 }

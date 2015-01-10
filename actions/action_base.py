@@ -32,7 +32,7 @@ class RepeatedText(DynStrActionBase):
             ref_match = re.search(":%\\(([\\w]+)\\)[ds]{1}$", self._spec)
             value_match = re.search(":([\\d]+)$", spec)
             
-            if (ref_match.group() and value_match.group):               
+            if (ref_match and ref_match.group() and value_match and value_match.group()):               
                 ref = ref_match.group(1)
                 value = value_match.group(1)
                 

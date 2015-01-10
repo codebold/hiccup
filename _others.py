@@ -11,6 +11,7 @@ import rules.emacs as emacs
 import rules.firefox as firefox
 import rules.thunderbird as thunderbird
 import rules.shell as shell
+import rules.vim as vim
 import rules.web as web
 import rules.choices.base as chc_base
 import rules.choices.web as chc_web
@@ -67,9 +68,10 @@ def load():
 
     grammars.append(
         builder.GrammarBuilder("Putty", context=AppContext(executable="putty"))
-        .add_rule(emacs.EmacsCoreRule())
-        .add_rule(emacs.EshellRule())
-        .add_rule(emacs.DiredRule())
+        .add_rule(emacs.EmacsCoreRule(context=AppContext(title="emacs")))
+        .add_rule(emacs.EshellRule(context=AppContext(title="emacs")))
+        .add_rule(emacs.DiredRule(context=AppContext(title="emacs")))
+        .add_rule(vim.VimCoreRule(context=AppContext(title="vi")))
         .add_rule(shell.ShellCoreRule())
         .add_rule(shell.GitRule())
         .build()

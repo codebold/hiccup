@@ -66,7 +66,7 @@ class ShellCoreRule(MappingRule):
         , "remove (directory | chai) recursively": T("rmdir -r")
         , "run": T("./")
         , "run <text>": T("./%(text)s") + K("tab,enter")
-        , "super [user] do": T("sudo ")
+        , "(sudo | super [user] do)": T("sudo ")
         , "switch user": T("su ")
         , "switch user <os_user>": T("su %(os_user)s\n")
         , "time": T("time ")
@@ -76,20 +76,19 @@ class ShellCoreRule(MappingRule):
         , "help flag short": T(" -h")
         , "verbose flag": T(" --verbose")
         , "verbose flag short": T(" -v")
-        , "run updates": T("runupdates\n")
+        , "run updates": T("runupdates \n")
+        , "force updates": T("runupdates -f\n")
         , "check updates": T("checkupdates\n")
-        , "restart": T("shutdown -r now\n")
-        , "reboot": T("reboot\n")
-        , "shutdown": T("shutdown now\n")
+        , "restart": T("sudo shutdown -r now\n")
+        , "reboot": T("sudo reboot\n")
+        , "shutdown": T("sudo shutdown now\n")
         , "shaste": M("(0.5, 0.5), right")
         # tools
-        , "apt[itude] search": T("aptitude search ")
-        , "apt[itude] install": T("aptitude install ")
-        , "apt[itude] show": T("aptitude show ")
-        , "apt[itude] update": T("aptitude update\n")
-        , "apt[itude] upgrade": T("aptitude update && aptitude upgrade\n")
-        , "emacs": T("emacs ")
-        , "emacsslap": T("emacs\n")
+        , "apt[itude] search": T("sudo aptitude search ")
+        , "apt[itude] install": T("sudo aptitude install ")
+        , "apt[itude] show": T("sudo aptitude show ")
+        , "apt[itude] update": T("sudo aptitude update\n")
+        , "apt[itude] upgrade": T("sudo aptitude update && aptitude upgrade\n")
         , "gem[s] chek": T("gem outdated\n")
         , "gem[s] update": T("gem update\n")
         , "MD 5 check": T("md5sum -c ")
@@ -97,8 +96,22 @@ class ShellCoreRule(MappingRule):
         , "root kit Hunter update": T("rkhunter --propupd\n")
         , "check root kit": T("chkrootkit\n") 
         , "web get": T("wget ")
-        , "vim": T("vim ")
-        , "vimslap": T("vim\n")
+        , "vim": T("vi ")
+        , "vim <text>": T("vi %(text)s") + K("tab,enter")        
+        , "vimf <common_file>": T("vi %(common_file)s\n")
+        , "vimslap": T("vi\n")
+        , "suvim": T("sudo vi ")
+        , "suvim <text>": T("sudo vi %(text)s") + K("tab,enter")        
+        , "suvimf <common_file>": T("sudo vi %(common_file)s\n")
+        , "suvimslap": T("sudo vi\n")
+        , "emacs": T("emacs ")
+        , "emacs <text>": T("emacs %(text)s") + K("tab,enter")        
+        , "emaff <common_file>": T("emacs %(common_file)s\n")
+        , "emacslap": T("emacs\n")
+        , "sumacs": T("sudo emacs ")
+        , "sumacs <text>": T("sudo emacs %(text)s") + K("tab,enter")        
+        , "sumaff <common_file>": T("sudo emacs %(common_file)s\n")
+        , "sumacslap": T("sudo emacs\n")
     }
     defaults = {
         "text":"",
@@ -107,6 +120,7 @@ class ShellCoreRule(MappingRule):
     extras = [
         chc_base.text,
         chc_base.text2,
+        chc_base.common_file,        
         chc_base.common_folder,
         chc_base.grep,
         chc_base.os_user
@@ -120,7 +134,8 @@ class GitRule(MappingRule):
     mapping = {
         "git ": T("git ")
         , "git add": T("git add ")
-        , "git add all": T("git add -A")
+        , "git add all": T("git add -A :/")
+        , "git add all dir[ectory]": T("git add -A .")
         , "git add <text>": T("git add %(text)s") + K("tab:3")
         , "git initial commit": T('git commit -m "Initial commit.\n"')
         , "git commit": T('git commit -m ""') + K("left")

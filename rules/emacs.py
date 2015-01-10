@@ -255,8 +255,10 @@ class EmacsCoreRule(MappingRule):
         , "apply macro": Emacs("apply-macro-to-region-lines")
         , "name macro": Emacs("name-last-kbd-macro")
         , "save macro": Emacs("insert-kbd-macro")
-
-        }
+        # search and replace
+        , "replace": Emacs("query-replace")
+        , "replace regex": Emacs("query-replace-regexp")
+    }
     defaults = {
         "text":"",
         "0to10000":0,

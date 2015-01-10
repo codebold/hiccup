@@ -19,7 +19,7 @@ class ApplicationActionBase(ExtensibleRepeatedText):
 
     def __init__(self, spec=None, submit=True, static=False):
         super(ApplicationActionBase, self).__init__(spec, static, pause=None, autofmt=False)
-        _submit = submit
+        self._submit = submit
 
     def _execute_before_keyboard_events(self):
         if isinstance(self._invoke_action, ActionBase):
@@ -44,6 +44,14 @@ class WinCmd(ApplicationActionBase):
 class Emacs(ApplicationActionBase):
     
     _invoke_action = K("a-u")
+
+#---------------------------------------------------------------------------
+# Vim
+#---------------------------------------------------------------------------
+
+class Vim(ApplicationActionBase):
+    
+    _invoke_action = K("escape,colon")
 
 #---------------------------------------------------------------------------
 # Firefox
